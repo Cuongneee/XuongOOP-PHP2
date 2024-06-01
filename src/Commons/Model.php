@@ -4,12 +4,14 @@ namespace Cuong\XuongOopPhp2\Commons;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
+use Doctrine\DBAL\Query\QueryBuilder;
+
 
 class Model
 {
     protected Connection|null $conn;
-
-    protected $queryBuilder;
+    protected QueryBuilder $queryBuilder;
+    protected string $tableName;
 
     public function __construct()
     {
@@ -18,8 +20,8 @@ class Model
             'user' => $_ENV['DB_USERNAME'],
             'password' => $_ENV['DB_PASSWORD'],
             'host' => $_ENV['DB_HOST'],
-            'driver' => $_ENV['DB_DRIVER'],
             'port' => $_ENV['DB_PORT'],
+            'driver' => $_ENV['DB_DRIVER'],
         ];
 
         $this->conn = DriverManager::getConnection($connectionParams);
@@ -28,34 +30,101 @@ class Model
     }
 
     // CRUD
-    protected function all()
+    public function all()
     {
-        return $this->queryBuilder->select('*')->fetchAllAssociative();
+        return $this->queryBuilder
+            ->select('*')
+            ->from($this->tableName)
+            ->orderBy('id', 'desc')
+            ->fetchAllAssociative();
     }
 
-    protected function paginate($page, $perPage = 9)
+    public function count()
     {
-
+        return $this->queryBuilder
+            ->select("COUNT(*) as $this->tableName")
+            ->from($this->tableName)
+            ->orderBy('id', 'desc')
+            ->fetchOne();
     }
 
-    protected function findById($id)
+    public function paginate($page = 1, $perPage = 5)
     {
+        $offset = $perPage * ($page - 1);
 
+        $data = $this->queryBuilder
+        ->select('*')
+        ->from($this->tableName)
+        ->setFirstResult($offset)
+        ->setMaxResults($perPage)
+        ->orderBy('id', 'desc')
+        ->fetchAllAssociative();
+
+        $totalPage = ceil($this->count() / $perPage);
+       
+        return [$data, $totalPage];
     }
 
-    protected function insert()
-    {
 
+    public function findById($id)
+    {
+        return $this->queryBuilder
+            ->select('*')
+            ->from($this->tableName)
+            ->where('id = ?')
+            ->setParameter(0, $id)
+            ->fetchAssociative();
     }
 
-    protected function update()
+    public function insert(array $data)
     {
+        if (!empty($data)) {
+            $query = $this->queryBuilder->insert($this->tableName);
 
+            $index = 0;
+            foreach ($data as $key => $value) {
+                $query->setValue($key, '?')->setParameter($index, $value);
+
+                ++$index;
+            }
+
+            $query->executeQuery();
+
+            return true;
+        }
+
+        return false;
     }
 
-    protected function delete()
+    public function update($id, array $data)
     {
+        if (!empty($data)) {
+            $query = $this->queryBuilder->update($this->tableName);
 
+            $index = 0;
+
+            foreach ($data as $key => $value) {
+                $query->set($key, '?')->setParameter($index, $value);
+
+                ++$index;
+            }
+
+            $query->where('id = ?')
+                ->setParameter(count($data), $id)
+                ->executeQuery();
+            return true;
+        }
+
+        return false;
+    }
+
+    public function delete($id)
+    {
+        return $this->queryBuilder
+            ->delete($this->tableName)
+            ->where('id = ?')
+            ->setParameter(0, $id)
+            ->executeQuery();
     }
 
     public function __destruct()

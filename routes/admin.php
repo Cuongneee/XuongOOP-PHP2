@@ -20,9 +20,9 @@ $router->mount('/admin', function () use ($router) {
         $router->get('/create',      UserController::class . '@create');
         $router->post('/store',      UserController::class . '@store');
         $router->get('/{id}',        UserController::class . '@show');
-        $router->put('/{id}/edit',   UserController::class . '@edit');
-        $router->post('/{id}',       UserController::class . '@update');
-        $router->delete('/{id}',     UserController::class . '@delete');
+        $router->get('/{id}/edit',   UserController::class . '@edit');
+        $router->put('/{id}',       UserController::class . '@update');
+        $router->post('/{id}/delete',     UserController::class . '@delete');
     });
 
 });
