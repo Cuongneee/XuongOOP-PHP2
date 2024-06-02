@@ -34,35 +34,53 @@ class UserController extends Controller
 
     }
 
-    public function crate()
+    public function create()
     {
-        echo __CLASS__ . '@' . __FUNCTION__;
+        $this->renderViewAdmin('users.create', []);
+        exit();
     }
 
     public function store()
     {
-        echo __CLASS__ . '@' . __FUNCTION__;
+        $this->user->insert([
+            'name' => $_POST['name'],
+            'avata' => $_FILES['avata']['name'],
+            'email' => $_POST['email'],
+            'password' => $_POST['password'],
+        ]);
+        header('Location: ' . url('admin/users'));
+        exit();
     }
 
-    public function showw($id)
+    public function show($id)
     {
-        echo __CLASS__ . '@' . __FUNCTION__ . ' - ID = ' . $id;
+        $this->edit($id);
     }
 
     public function edit($id)
     {
-        echo __CLASS__ . '@' . __FUNCTION__ . ' - ID = ' . $id;
+        $oneUser = $this->user->findById($id);
+        $this->renderViewAdmin('users.update', [
+            'oneUser' => $oneUser
+        ]);
     }
 
     public function update($id)
     {
-        echo __CLASS__ . '@' . __FUNCTION__ . ' - ID = ' . $id;
+        $this->user->update($id, [
+            'name' => $_POST['name'],
+            'avata' => $_FILES['avata']['name'],
+            'email' => $_POST['email'],
+            'password' => $_POST['password'],
+        ]);
+        header('Location: ' . url('admin/users'));
+        exit();
     }
 
     public function delete($id)
     {
         $this->user->delete($id);
-        header('Location: ' .url('admin/users'));
+        header('Location: ' . url('admin/users'));
         exit();
     }
 }

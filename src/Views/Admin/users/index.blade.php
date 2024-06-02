@@ -39,8 +39,12 @@
                         <td><?= $user['create_at'] ?></td>
                         <td><?= $user['update_at'] ?></td>
                         <td>
-                            <form action="{{ url('admin/users/' .$user['id'] . '/delete') }}" method="post">
+                            <form action="{{ url('admin/users/' .$user['id'] . '/delete') }}" method="post">         
                                 <button onclick="return confirm('Chắc chắn muốn xóa ?')" type="submit">Delete</button>
+                            </form>
+
+                            <form action="{{ url('admin/users/' . $user['id'] . '/edit') }}" method="get">
+                               <button type="submit">Edit</button>
                             </form>
                         </td>
                     </tr>
@@ -48,6 +52,11 @@
                 @endforeach
             </tbody>
         </table>
+
+        {{-- Thêm --}}
+        <form action="{{ url('admin/users/create') }}" method="get">         
+            <button type="submit">Create</button>
+        </form>
         </div>
 </body>
 

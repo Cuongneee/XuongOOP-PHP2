@@ -53,27 +53,29 @@ class Model
         $offset = $perPage * ($page - 1);
 
         $data = $this->queryBuilder
-        ->select('*')
-        ->from($this->tableName)
-        ->setFirstResult($offset)
-        ->setMaxResults($perPage)
-        ->orderBy('id', 'desc')
-        ->fetchAllAssociative();
+            ->select('*')
+            ->from($this->tableName)
+            ->setFirstResult($offset)
+            ->setMaxResults($perPage)
+            ->orderBy('id', 'desc')
+            ->fetchAllAssociative();
 
         $totalPage = ceil($this->count() / $perPage);
-       
+
         return [$data, $totalPage];
     }
 
 
     public function findById($id)
     {
-        return $this->queryBuilder
-            ->select('*')
-            ->from($this->tableName)
-            ->where('id = ?')
-            ->setParameter(0, $id)
-            ->fetchAssociative();
+         {
+            return $this->queryBuilder
+                ->select('*')
+                ->from($this->tableName)
+                ->where('id = ?')
+                ->setParameter(0, $id)
+                ->fetchAssociative();
+        }
     }
 
     public function insert(array $data)

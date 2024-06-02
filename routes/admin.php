@@ -21,9 +21,7 @@ $router->mount('/admin', function () use ($router) {
         $router->post('/store',      UserController::class . '@store');
         $router->get('/{id}',        UserController::class . '@show');
         $router->get('/{id}/edit',   UserController::class . '@edit');
-        $router->put('/{id}',       UserController::class . '@update');
+        $router->post('/{id}/update',       UserController::class . '@update');
         $router->post('/{id}/delete',     UserController::class . '@delete');
     });
-
 });
-
