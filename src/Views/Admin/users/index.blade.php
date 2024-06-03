@@ -1,63 +1,63 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('layouts.master')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Latest compiled and minified CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+@section('title')
+    Quản lý Người dùng
+@endsection
 
-    <!-- Latest compiled JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <title>Danh sách Users</title>
-</head>
+@section('content')
+    @if (isset($_SESSION['status']) && $_SESSION['status'])
+        <div class="alert alert-success">{{ $_SESSION['msg'] }}</div>
 
-<body>
-    <<div class="container mt-3">
-        <h2>Danh sách Users</h2>
+        @php
+            unset($_SESSION['status']);
+            unset($_SESSION['msg']);
+        @endphp
+    @endif
 
-        <table class="table table-striped">
-            <thead>
+    @if (isset($_SESSION['status']) && !$_SESSION['status'])
+        <div class="alert alert-warning">{{ $_SESSION['msg'] }}</div>
+
+        @php
+            unset($_SESSION['status']);
+            unset($_SESSION['msg']);
+        @endphp
+    @endif
+
+    <a href="{{ url('admin/users/create') }}" class="btn btn-info">Thêm mới</a>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>NAME</th>
+                <th>AVATAR</th>
+                <th>EMAIL</th>
+                <th>CREATED AT</th>
+                <th>UPDATED AT</th>
+                <th>ACTION</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach ($users as $user)
                 <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Avata</th>
-                    <th>Email</th>
-                    <th>Created_at</th>
-                    <th>Updated_at</th>
-                    <th>Action</th>
+                    <td>{{ $user['id'] }}</td>
+                    <td>{{ $user['name'] }}</td>
+                    <td>
+                        <img src="{{ show_upload($user['avata']) }}" width="100px" alt="">
+                    </td>
+                    <td>{{ $user['email'] }}</td>
+                    <td>{{ $user['create_at'] }}</td>
+                    <td>{{ $user['update_at'] }}</td>
+                    <td>
+                        <a href="{{ url("admin/users/{$user['id']}/show") }}" class="btn btn-info">Xem</a>
+                        <a href="{{ url("admin/users/{$user['id']}/edit") }}" class="btn btn-warning">Sửa</a>
+                        <a href="{{ url("admin/users/{$user['id']}/delete") }}"
+                            onclick="return confirm('Chắc chắn xóa không?');" class="btn btn-danger">Xóa</a>
+                    </td>
                 </tr>
-            </thead>
+            @endforeach
 
-            <tbody>
-                @foreach ($users as $user)
-                    <tr>
-                        <td><?= $user['id'] ?></td>
-                        <td><?= $user['name'] ?></td>
-                        <td></td>
-                        <td><?= $user['email'] ?></td>
-                        <td><?= $user['create_at'] ?></td>
-                        <td><?= $user['update_at'] ?></td>
-                        <td>
-                            <form action="{{ url('admin/users/' .$user['id'] . '/delete') }}" method="post">         
-                                <button onclick="return confirm('Chắc chắn muốn xóa ?')" type="submit">Delete</button>
-                            </form>
-
-                            <form action="{{ url('admin/users/' . $user['id'] . '/edit') }}" method="get">
-                               <button type="submit">Edit</button>
-                            </form>
-                        </td>
-                    </tr>
-
-                @endforeach
-            </tbody>
-        </table>
-
-        {{-- Thêm --}}
-        <form action="{{ url('admin/users/create') }}" method="get">         
-            <button type="submit">Create</button>
-        </form>
-        </div>
-</body>
-
-</html>
+        </tbody>
+    </table>
+@endsection

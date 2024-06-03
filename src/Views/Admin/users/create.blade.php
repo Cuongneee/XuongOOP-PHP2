@@ -1,26 +1,41 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Thêm mới User</title>
-</head>
-<body>
-    <form action="{{ url('admin/users/store')}}" method="post">
-        <label for="">Name</label>
-        <input type="text" name="name">
+@extends('layouts.master')
 
-        <label for="">Avata</label>
-        <input type="file" name="avata">
+@section('title')
+    Thêm mới Người dùng
+@endsection
 
-        <label for="">Email</label>
-        <input type="email" name="email" id="">
 
-        <label for="">Password</label>
-        <input type="password" name="password" id="">
+@section('content')
+    @if (!empty($_SESSION['errors']))
+        <div class="alert alert-warning">
+            <ul>
+                @foreach ($_SESSION['errors'] as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+        @php
+            unset($_SESSION['errors']);
+        @endphp
+    @endif
 
-        <button type="submit">Create</button>
+    <form action="{{ url('admin/users/store') }}" enctype="multipart/form-data" method="POST">
+        <div class="mb-2 mt-2">
+            <label for="name" class="form-label">Name:</label>
+            <input type="text" class="form-control" id="name" placeholder="Enter name" name="name">
+        </div>
+        <div class="mb-2 mt-2">
+            <label for="email" class="form-label">Email:</label>
+            <input type="email" class="form-control" id="email" placeholder="Enter email" name="email">
+        </div>
+        <div class="mb-2 mt-2">
+            <label for="avata" class="form-label">Avatar:</label>
+            <input type="file" class="form-control" id="avata" placeholder="Enter avata" name="avata">
+        </div>
+        <div class="mb-2 mt-2">
+            <label for="password" class="form-label">Pass:</label>
+            <input type="password" class="form-control" id="password" placeholder="Enter password" name="password">
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
     </form>
-</body>
-</html>
+@endsection

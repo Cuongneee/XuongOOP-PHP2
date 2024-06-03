@@ -1,27 +1,52 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Sửa User</title>
-</head>
-<body>
+@extends('layouts.master')
+@section('title')
+    Chỉnh sửa người dùng
+@endsection
+
+@section('content')
+    @if (!empty($_SESSION['errors']))
+        <div class="alert alert-warning">
+            <ul>
+                @foreach ($_SESSION['errors'] as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+        @php
+            unset($_SESSION['errors']);
+        @endphp
+    @endif
+
+    @if (isset($_SESSION['status']) && $_SESSION['status'])
+        <div class="alert alert-success">{{ $_SESSION['msg'] }}</div>
+
+        @php
+            unset($_SESSION['status']);
+            unset($_SESSION['msg']);
+        @endphp
+    @endif
+
     <form action="{{ url('admin/users/' . $oneUser['id'] . '/update') }}" method="post">
 
-        <label for="">Name</label>
-        <input type="text" name="name" value="{{ $oneUser['name'] }}">
+        <div class="mb-3 mt-3">
+            <label for="name" class="form-label">Name:</label>
+            <input type="text" class="form-control" id="name" placeholder="Enter name" value="{{ $oneUser['name'] }}"
+                name="name">
+        </div>
+        <div class="mb-3 mt-3">
+            <label for="email" class="form-label">Email:</label>
+            <input type="email" class="form-control" id="email" placeholder="Enter email" value="{{ $oneUser['email'] }}"
+                name="email">
+        </div>
+        <div class="mb-3 mt-3">
+            <label for="avata" class="form-label">Avatar:</label>
+            <input type="file" class="form-control" id="avata" placeholder="Enter avata" name="avata">
+            <img src="{{ show_upload($oneUser['avata']) }}" width="100px" alt="">
+        </div>
+        <div class="mb-3 mt-3">
+            <label for="password" class="form-label">Password:</label>
+            <input type="text" class="form-control" id="password" placeholder="Enter password" name="password">
+        </div>
 
-        <label for="">Avata</label>
-        <input type="file" name="avata">
-
-        <label for="">Email</label>
-        <input type="email" name="email" id="" value="{{ $oneUser['email'] }}">
-
-        <label for="">Password</label>
-        <input type="password" name="password" id="" value="{{ $oneUser['password'] }}">
-
-        <button type="submit">Update</button>
-    </form>
-</body>
-</html>
+        <button type="submit" class="btn btn-primary">Update</button>
+    @endsection
